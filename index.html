@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Summer of AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Monoton&family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0118;
+    --bg2:#160630;
+    --panel:rgba(28,8,58,0.55);
+    --panel-open:rgba(40,12,82,0.7);
+    --ink:#f5ecff;
+    --muted:#b89ad9;
+    --line:rgba(180,120,255,0.28);
+    --c1:#ff2e7e;
+    --c2:#ff7a2f;
+    --c3:#ffd23f;
+    --c4:#39ff9e;
+    --c5:#22d3ff;
+    --c6:#6a5cff;
+    --c7:#c44dff;
+    --rainbow:linear-gradient(90deg,var(--c1),var(--c2),var(--c3),var(--c4),var(--c5),var(--c6),var(--c7));
+    --rainbow-soft:linear-gradient(90deg,#ff2e7e,#ff7a2f,#ffd23f,#39ff9e,#22d3ff,#6a5cff,#c44dff);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Rajdhani',system-ui,sans-serif;
+    font-size:1.12rem;
+    line-height:1.7;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .bg-fixed{position:fixed;inset:0;z-index:-3;
+    background:
+      radial-gradient(1200px 700px at 50% -10%, rgba(196,77,255,0.22), transparent 60%),
+      radial-gradient(900px 600px at 90% 10%, rgba(34,211,255,0.12), transparent 60%),
+      linear-gradient(180deg,var(--bg) 0%, var(--bg2) 55%, var(--bg) 100%);
+  }
+  .grid-floor{position:fixed;left:-50%;right:-50%;bottom:-10%;height:55vh;z-index:-2;
+    background-image:
+      linear-gradient(rgba(255,46,126,0.0) 0, rgba(255,46,126,0.0) 0),
+      repeating-linear-gradient(90deg, rgba(34,211,255,0.35) 0 1px, transparent 1px 7%),
+      repeating-linear-gradient(0deg, rgba(196,77,255,0.30) 0 1px, transparent 1px 9%);
+    transform:perspective(420px) rotateX(70deg);
+    transform-origin:bottom center;
+    mask-image:linear-gradient(180deg, transparent, #000 60%);
+    -webkit-mask-image:linear-gradient(180deg, transparent, #000 60%);
+    animation:grid 14s linear infinite;
+    opacity:.7;
+  }
+  @keyframes grid{from{background-position:0 0,0 0,0 0;}to{background-position:0 0,0 0,0 9%;}}
+  .scan{position:fixed;inset:0;z-index:50;pointer-events:none;
+    background:repeating-linear-gradient(0deg, rgba(0,0,0,0.16) 0 1px, transparent 1px 3px);
+    mix-blend-mode:overlay;opacity:.5;}
+
+  header{position:relative;text-align:center;padding:9vh 20px 6vh;}
+  .sun{position:relative;width:min(260px,60vw);height:min(260px,60vw);margin:0 auto 26px;border-radius:50%;
+    background:linear-gradient(180deg,var(--c1) 0%,var(--c2) 22%,var(--c3) 42%,var(--c4) 60%,var(--c5) 78%,var(--c7) 100%);
+    box-shadow:0 0 60px rgba(255,46,126,0.45),0 0 130px rgba(106,92,255,0.4);
+    animation:pulse 5s ease-in-out infinite;}
+  .sun::after{content:"";position:absolute;inset:0;border-radius:50%;
+    background:repeating-linear-gradient(0deg, transparent 0 12px, var(--bg) 12px 15px);
+    -webkit-mask:linear-gradient(180deg, transparent 52%, #000 52%);
+    mask:linear-gradient(180deg, transparent 52%, #000 52%);}
+  @keyframes pulse{0%,100%{filter:saturate(1.1) brightness(1);}50%{filter:saturate(1.35) brightness(1.12);}}
+
+  h1{font-family:'Monoton',cursive;font-weight:400;font-size:clamp(2.4rem,8vw,4.6rem);
+    margin:0;letter-spacing:2px;line-height:1.05;
+    background:var(--rainbow);-webkit-background-clip:text;background-clip:text;color:transparent;
+    filter:drop-shadow(0 0 18px rgba(196,77,255,0.55));}
+  .subtitle{margin:14px auto 0;max-width:560px;color:var(--muted);font-size:1.15rem;letter-spacing:.5px;}
+  .tagline{display:inline-block;margin-top:18px;padding:6px 16px;border:1px solid var(--line);border-radius:999px;
+    font-family:'Orbitron',sans-serif;font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--c5);
+    box-shadow:0 0 18px rgba(34,211,255,0.25) inset;}
+
+  main{max-width:820px;margin:0 auto;padding:10px 20px 40px;}
+
+  .acc{margin:16px 0;border:1px solid var(--line);border-radius:14px;overflow:hidden;
+    background:var(--panel);backdrop-filter:blur(6px);
+    opacity:0;transform:translateY(24px);
+    animation:rise .6s cubic-bezier(.2,.7,.2,1) forwards;
+    animation-delay:calc(var(--i) * 80ms);}
+  @keyframes rise{to{opacity:1;transform:translateY(0);}}
+  .acc.open{background:var(--panel-open);border-color:rgba(196,77,255,0.6);
+    box-shadow:0 0 30px rgba(196,77,255,0.18);}
+
+  .acc-header{width:100%;display:flex;align-items:center;gap:16px;cursor:pointer;
+    background:none;border:0;color:inherit;text-align:left;padding:18px 20px;font-family:inherit;}
+  .num{flex:0 0 auto;font-family:'Orbitron',sans-serif;font-weight:900;font-size:.95rem;
+    width:44px;height:44px;display:grid;place-items:center;border-radius:10px;
+    border:1px solid var(--line);color:var(--c5);
+    background:linear-gradient(180deg, rgba(34,211,255,0.08), rgba(196,77,255,0.06));
+    text-shadow:0 0 10px rgba(34,211,255,0.6);}
+  .acc.open .num{color:var(--c1);border-color:rgba(255,46,126,0.6);text-shadow:0 0 12px rgba(255,46,126,0.7);}
+  .acc-title{flex:1;font-family:'Orbitron',sans-serif;font-weight:700;font-size:clamp(1.05rem,3.4vw,1.4rem);
+    letter-spacing:.5px;line-height:1.25;
+    background:var(--rainbow-soft);-webkit-background-clip:text;background-clip:text;color:transparent;
+    filter:drop-shadow(0 0 8px rgba(196,77,255,0.35));}
+  .chev{flex:0 0 auto;width:14px;height:14px;border-right:2px solid var(--c7);border-bottom:2px solid var(--c7);
+    transform:rotate(45deg);transition:transform .3s ease;margin-right:4px;
+    filter:drop-shadow(0 0 6px rgba(196,77,255,0.6));}
+  .acc.open .chev{transform:rotate(-135deg);}
+
+  .acc-body{max-height:0;overflow:hidden;transition:max-height .4s ease;}
+  .acc-inner{padding:0 22px 22px;color:var(--ink);}
+  .acc-inner p{margin:0 0 14px;}
+  .acc-inner .quote{color:var(--c4);font-style:italic;}
+  .acc-inner ul{margin:0 0 14px;padding-left:1.25em;}
+  .acc-inner li{margin:0 0 12px;}
+  .acc-inner li::marker{color:var(--c5);}
+
+  .link-btn{display:inline-block;margin:2px 0 16px;padding:9px 18px;border-radius:10px;
+    border:1px solid var(--c5);color:var(--c5);text-decoration:none;
+    font-family:'Orbitron',sans-serif;font-size:.74rem;letter-spacing:1.6px;text-transform:uppercase;
+    box-shadow:0 0 16px rgba(34,211,255,0.2);transition:background .2s, box-shadow .2s;}
+  .link-btn:hover{background:rgba(34,211,255,0.12);box-shadow:0 0 26px rgba(34,211,255,0.45);}
+
+  .img-drop{border:1.6px dashed rgba(34,211,255,0.5);border-radius:12px;
+    background:linear-gradient(135deg, rgba(34,211,255,0.05), rgba(196,77,255,0.05));
+    min-height:150px;display:grid;place-items:center;text-align:center;padding:24px;margin:6px 0 4px;
+    color:var(--muted);font-size:.92rem;letter-spacing:.5px;}
+  .img-drop b{display:block;font-family:'Orbitron',sans-serif;font-size:.7rem;letter-spacing:2px;
+    text-transform:uppercase;color:var(--c5);margin-bottom:6px;}
+  .img-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;}
+  .acc-inner img{width:100%;border-radius:12px;border:1px solid var(--line);display:block;margin:6px 0;}
+
+  .loopwrap{margin:8px 0 4px;}
+  .loopwrap svg{width:100%;height:auto;display:block;}
+
+  footer{text-align:center;padding:50px 20px 70px;color:var(--muted);font-size:.95rem;letter-spacing:1px;}
+  footer .heart{background:var(--rainbow);-webkit-background-clip:text;background-clip:text;color:transparent;}
+
+  @media (max-width:520px){
+    body{font-size:1.05rem;}
+    .acc-header{padding:15px 14px;gap:12px;}
+    .num{width:38px;height:38px;}
+    .acc-inner{padding:0 16px 18px;}
+  }
+</style>
+</head>
+<body>
+  <div class="bg-fixed"></div>
+  <div class="grid-floor"></div>
+  <div class="scan"></div>
+
+  <header>
+    <div class="sun" aria-hidden="true"></div>
+    <!-- EDIT: your title and subtitle -->
+    <h1>Summer of AI</h1>
+    <p class="subtitle">A self-guided field guide, built just for you, Jane Mizzi. Work through it whenever. Love me forever.</p>
+    <span class="tagline">12 Modules &bull; No Coding Required</span>
+  </header>
+
+  <main id="app">
+    <!--
+      HOW TO ADD A PICTURE:
+      Inside any accordion, replace an .img-drop block (or add a new line) with:
+      <img src="my-picture.jpg" alt="short description">
+      Put the image file next to index.html and use its file name as the src.
+      Order inside a section is: text, then link, then image.
+    -->
+
+    <!-- 1 -->
+    <section class="acc" style="--i:1">
+      <button class="acc-header" aria-expanded="false">
+        <span class="num">01</span>
+        <span class="acc-title">Tip Top Tips</span>
+        <span class="chev" aria-hidden="true"></span>
+      </button>
+      <div class="acc-body"><div class="acc-inner">
+        <p>These are a few small tips that will help you get more value out of the AI.</p>
+        <ul>
+          <li>Meta prompting: ask the AI to improve your prompt before having it run the task. It's the steroids Bane uses before he gets huge and breaks Batman's back.</li>
+          <li>Have the AI ask you questions to surface information before you proceed with a task. The context portfolio in the next module is a good example of this. Tell it your goal and ask it to interview you until it has enough information to complete the task.</li>
+          <li>Don't be afraid to ask the AI dumb questions. The AI has no feelings, opinions, or expectations. It also has boundless patience. Never hold yourself back from asking the AI a question because you think it's dumb. You miss 100% of the dumb questions you don't ask AI. 60% of the time, the question is not dumb 100% of the time.</li>
+          <li>Tell the AI to ask you questions if anything is unclear. A lot of times I end my prompts with "Ask me up to five questions if anything is not clear." That helps avoid a lot of wasted time going down the wrong path.</li>
+          <li>Think of the AI as a partner, instead of as a tool.</li>
+        </ul>
+        <img src="bane.png" alt="Bane breaking Batman's back" style="max-width:460px">
+      </div></div>
+    </section>
+
+    <!-- Claude Desktop App -->
+    <section class="acc" style="--i:2">
+      <button class="acc-header" aria-expanded="false">
+        <span class="num">02</span>
+        <span class="acc-title">Claude Desktop App</span>
+        <span class="chev" aria-hidden="true"></span>
+      </button>
+      <div class="acc-body"><div class="acc-inner">
+        <p>I still use Claude on my phone all the time, but for any serious task, like making an app for the love of my life, I always use the desktop app.</p>
+        <p>Here's the link to download it on your MacBook:</p>
+        <a class="link-btn" href="https://claude.com/download" target="_blank" rel="noopener">Download Claude for Mac &rarr;</a>
+      </div></div>
+    </section>
+
+
+    <!-- 2 -->
+    <section class="acc" style="--i:3">
+      <button class="acc-header" aria-expanded="false">
+        <span class="num">03</span>
+        <span class="acc-title">Context Portfolio</span>
+        <span class="chev" aria-hidden="true"></span>
+      </button>
+      <div class="acc-body"><div class="acc-inner">
+        <p>This is an AI powered tool that interviews you and builds 10 files for you that are all about you, what you do, your preferences, how you work, etc. Then you can give those files to whichever AI you're working with and it will reference that information every time you interact with it. Imagine the difference between asking who knows you really well to do something, as opposed to asking a complete stranger to do the same task. Maybe that was an obvious analogy. I should have asked Claude to write it.</p>
+        <a class="link-btn" href="https://www.contextportfolio.ai/interview" target="_blank" rel="noopener">Open the interviewer &rarr;</a>
+      </div></div>
+    </section>
+
+    <!-- 3 -->
+    <section class="acc" style="--i:4">
+      <button class="acc-header" aria-expanded="false">
+        <span class="num">04</span>
+        <span class="acc-title">Projects</span>
+        <span class="chev" aria-hidden="true"></span>
+      </button>
+      <div class="acc-body"><div class="acc-inner">
+        <p>This is one place that the context portfolio really pays off. Each project is a group of chats that share context, so for example, if you have a project for worksheet creation, you could include specific examples of worksheets that you have made in the past, and all chats in that project will reference those examples every time.</p>
+        <img src="projects.png" alt="The Projects menu item in the Claude app sidebar" style="max-width:390px">
+      </div></div>
+    </section>
+
+    <!-- 4 -->
+    <section class="acc" style="--i:5">
+      <button class="acc-header" aria-expanded="false">
+        <span class="num">05</span>
+        <span class="acc-title">Image Generation</span>
+        <span class="chev" aria-hidden="true"></span>
+      </button>
+      <div class="acc-body"><div class="acc-inner">
+        <p>It's kind of obligatory for any AI training. Create some stuff. Get weird. See what works and what doesn't. Google Gemini and ChatGPT are the two easiest ways to create images. Anthropic is too busy making money to develop a image generation model.</p>
+        <p>BTW, you don't need to make any weird, almost real photos of loved ones. But you can turn your loved ones into dogs, if that's what you're in to.</p>
+        <img src="bones-sketch.png" alt="Hand-drawn sketch of a character painting bones, captioned: there's no mistakes that you cannot turn into bones" style="max-width:520px">
+        <img src="bones-poodle.png" alt="AI-generated version: a poodle painting a skeleton with the same caption" style="max-width:520px">
+      </div></div>
+    </section>
+
+    <!-- 5 (NEW) -->
+    <section class="acc" style="--i:6">
+      <button class="acc-header" aria-expanded="false">
+        <span class="num">06</span>
+        <span class="acc-title">Setting up an AI thought partner / assistant / expert / tutor / friend of a friend</span>
+        <span class="chev" aria-hidden="true"></span>
+      </button>
+      <div class="acc-body"><div class="acc-inner">
+        <p>As you figure things out, this will be where you go to ask the AI questions. You'll create a project called knowledge, or something. Then you dump your context portfolio into it, and add some explainer that you are learning how to do this stuff and you don't have any prior knowledge of coding. Then you start a chat where you'll ask all of your questions. You can always go back to this chat with questions. No need to create a new one each time. You'll never fill up the context window by just asking questions.</p>
+      </div></div>
+    </section>
+
+    <!-- 6 -->
+    <section class="acc" style="--i:7">
+      <button class="acc-header" aria-expanded="false">
+        <span class="num">07</span>
+        <span class="acc-title">Claude Cowork</span>
+        <span class="chev" aria-hidden="true"></span>
+      </button>
+      <div class="acc-body"><div class="acc-inner">
+        <p>A more powerful way of interacting with Claude. It can autonomously modify files on your computer. It can also do scheduled tasks, like creating a daily brief to prepare you for the day. I used Cowork to add all of the items from the SLM snack list to instacart, and I pretty much only told it to find the email and fill the cart. It can be really useful, but you kind of have to play with it to figure out the best uses for you. It can help organize files on your computer, but that's like saying a fighter jet has a comfortable seat. It's not really like that, but you get the point.</p>
+        <img src="cowork-tab.png" alt="The Cowork tab in the Claude app" style="max-width:390px">
+      </div></div>
+    </section>
+
+    <!-- 7 -->
+    <section class="acc" style="--i:8">
+      <button class="acc-header" aria-expanded="false">
+        <span class="num">08</span>
+        <span class="acc-title">Claude Code</span>
+        <span class="chev" aria-hidden="true"></span>
+      </button>
+      <div class="acc-body"><div class="acc-inner">
+        <p>This will probably end up being the way you use AI most of the time, or at least for any big task. You don't need to know anything about coding, and it's the most powerful way to interact with Claude. The following items on this list are used in Claude Code (although a couple also work with co-work).</p>
+        <img src="code-tab.png" alt="The Code tab in the Claude app" style="max-width:390px">
+      </div></div>
+    </section>
+
+    <!-- 8 -->
+    <section class="acc" style="--i:9">
+      <button class="acc-header" aria-expanded="false">
+        <span class="num">09</span>
+        <span class="acc-title">Connectors / Tools</span>
+        <span class="chev" aria-hidden="true"></span>
+      </button>
+      <div class="acc-body"><div class="acc-inner">
+        <p>These give Claude access to existing apps like Canva or Gmail. What the AI can accomplish on specific tasks with tools is way beyond what it can do on its own, like a person trying to build a house with their bear ass hands, and then getting power tools.</p>
+        <img src="customize-tab.png" alt="The Customize menu item under the Code tab in the Claude app" style="max-width:390px">
+      </div></div>
+    </section>
+
+    <!-- 9 -->
+    <section class="acc" style="--i:10">
+      <button class="acc-header" aria-expanded="false">
+        <span class="num">10</span>
+        <span class="acc-title">Skills</span>
+        <span class="chev" aria-hidden="true"></span>
+      </button>
+      <div class="acc-body"><div class="acc-inner">
+        <p>Kind of like tools in that you use a skill to help you with a specific task, but skills are more like a playbook. To use the worksheet example again, you could write a skill explaining all the rules and instructions for creating a new worksheet, and then you can call that skill in any chat, which avoids you having to reexplain everything about worksheets.</p>
+        <img src="skills.png" alt="The Skills panel under Customize in the Claude app, listing personal skills" style="max-width:562px">
+      </div></div>
+    </section>
+
+    <!-- 10 -->
+    <section class="acc" style="--i:11">
+      <button class="acc-header" aria-expanded="false">
+        <span class="num">11</span>
+        <span class="acc-title">/goal</span>
+        <span class="chev" aria-hidden="true"></span>
+      </button>
+      <div class="acc-body"><div class="acc-inner">
+        <p>This is a command that you add to a prompt that will make the AI go through a loop until it accomplishes a task. It requires a concrete measure of success, like a rubric, so that it knows when it's done. This is a fundamental change in how we can work with AI, and it didn't exist two weeks ago. I think there's a ton of potential here for teachers. This is another way that you could generate worksheets. Claude suggested, <span class="quote">"generating leveled versions of a reading until each hits a target grade level."</span> It would probably also work well for grading, but I know that's a sensitive subject.</p>
+        <div class="loopwrap">
+          <svg viewBox="0 0 760 150" role="img" aria-label="goal loop diagram">
+            <defs>
+              <linearGradient id="g" x1="0" x2="1">
+                <stop offset="0" stop-color="#ff2e7e"/><stop offset=".5" stop-color="#22d3ff"/><stop offset="1" stop-color="#c44dff"/>
+              </linearGradient>
+              <marker id="arr" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto">
+                <path d="M0,0 L6,3 L0,6 Z" fill="#22d3ff"/>
+              </marker>
+            </defs>
+            <g fill="none" stroke="url(#g)" stroke-width="2">
+              <rect x="8" y="48" width="150" height="54" rx="10"/>
+              <rect x="210" y="48" width="150" height="54" rx="10"/>
+              <rect x="412" y="48" width="150" height="54" rx="10"/>
+              <rect x="612" y="48" width="140" height="54" rx="10"/>
+            </g>
+            <g fill="#f5ecff" font-family="Orbitron, sans-serif" font-size="13" text-anchor="middle">
+              <text x="83" y="79">Prompt + Rubric</text>
+              <text x="285" y="79">AI attempts</text>
+              <text x="487" y="72">Check vs.</text>
+              <text x="487" y="89">rubric</text>
+              <text x="682" y="79">Done</text>
+            </g>
+            <g stroke="#22d3ff" stroke-width="2" fill="none" marker-end="url(#arr)">
+              <line x1="158" y1="75" x2="206" y2="75"/>
+              <line x1="360" y1="75" x2="408" y2="75"/>
+              <line x1="562" y1="75" x2="608" y2="75"/>
+            </g>
+            <path d="M487,102 C487,138 285,138 285,109" stroke="#ff2e7e" stroke-width="2" fill="none"/>
+            <path d="M285,100 L280,111 L290,111 Z" fill="#ff2e7e"/>
+            <text x="386" y="135" fill="#ff7a2f" font-family="Orbitron, sans-serif" font-size="11" text-anchor="middle">not yet, loop again</text>
+          </svg>
+        </div>
+      </div></div>
+    </section>
+
+    <!-- 11 -->
+    <section class="acc" style="--i:12">
+      <button class="acc-header" aria-expanded="false">
+        <span class="num">12</span>
+        <span class="acc-title">AgentOS (maybe?)</span>
+        <span class="chev" aria-hidden="true"></span>
+      </button>
+      <div class="acc-body"><div class="acc-inner">
+        <p>It's a free, 8 module, self guided training. I'm just starting it, but I think it might be really useful for you.</p>
+        <a class="link-btn" href="https://aidbagentos.ai/" target="_blank" rel="noopener">Open AgentOS &rarr;</a>
+      </div></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Created with love by <span class="heart">Pooooooodle</span></p>
+  </footer>
+
+<script>
+  document.querySelectorAll('.acc-header').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var acc = btn.parentElement;
+      var body = acc.querySelector('.acc-body');
+      var isOpen = acc.classList.toggle('open');
+      btn.setAttribute('aria-expanded', isOpen);
+      body.style.maxHeight = isOpen ? (body.scrollHeight + 'px') : null;
+    });
+  });
+  window.addEventListener('resize', function(){
+    document.querySelectorAll('.acc.open .acc-body').forEach(function(body){
+      body.style.maxHeight = body.scrollHeight + 'px';
+    });
+  });
+</script>
+</body>
+</html>
