@@ -136,6 +136,9 @@
     text-transform:uppercase;color:var(--c5);margin-bottom:6px;}
   .img-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;}
   .acc-inner img{width:100%;border-radius:12px;border:1px solid var(--line);display:block;margin:6px 0;}
+  .video-embed{position:relative;width:100%;aspect-ratio:16/9;margin:12px 0;border-radius:12px;
+    overflow:hidden;border:1px solid var(--line);box-shadow:0 0 22px rgba(34,211,255,0.12);}
+  .video-embed iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
 
   .loopwrap{margin:8px 0 4px;}
   .loopwrap svg{width:100%;height:auto;display:block;}
@@ -297,6 +300,9 @@
       <div class="acc-body"><div class="acc-inner">
         <p>These give Claude access to existing apps like Canva or Gmail. What the AI can accomplish on specific tasks with tools is way beyond what it can do on its own, like a person trying to build a house with their bear ass hands, and then getting power tools.</p>
         <img src="customize-tab.png" alt="The Customize menu item under the Code tab in the Claude app" style="max-width:390px">
+        <div class="video-embed">
+          <iframe src="https://www.youtube.com/embed/btCwxgnBtfU" title="Connectors video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        </div>
       </div></div>
     </section>
 
@@ -311,6 +317,9 @@
         <p>Kind of like tools in that you use a skill to help you with a specific task, but skills are more like a playbook. To use the worksheet example again, you could write a skill explaining all the rules and instructions for creating a new worksheet, and then you can call that skill in any chat, which avoids you having to reexplain everything about worksheets.</p>
         <img src="skills.png" alt="The Skills panel under Customize in the Claude app, listing personal skills" style="max-width:562px">
         <a class="link-btn" href="https://play.aidailybrief.ai/episodes/skills-master-class/" target="_blank" rel="noopener">AI Daily Brief: Skills Masterclass &rarr;</a>
+        <div class="video-embed">
+          <iframe src="https://www.youtube.com/embed/pjilbWz6n3Q" title="Skills video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        </div>
       </div></div>
     </section>
 
@@ -355,6 +364,9 @@
             <path d="M285,100 L280,111 L290,111 Z" fill="#ff2e7e"/>
             <text x="386" y="135" fill="#ff7a2f" font-family="Orbitron, sans-serif" font-size="11" text-anchor="middle">not yet, loop again</text>
           </svg>
+        </div>
+        <div class="video-embed">
+          <iframe src="https://www.youtube.com/embed/Eht43xLNS0U" title="Goals video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
         </div>
       </div></div>
     </section>
